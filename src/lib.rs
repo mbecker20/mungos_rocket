@@ -1,4 +1,4 @@
-// must have mungos and rocket with json feature enabled to use this macro
+// must have mungos, rocket with json feature enabled, and probably serde to use this macro
 
 #[macro_export]
 macro_rules! mungos_routes {
