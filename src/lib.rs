@@ -1,5 +1,7 @@
 // must have mungos, rocket with json feature enabled, and probably serde to use this macro
+// rocket must .manage an instance of Mungos
 // use with...
+//
 // #[macro_use]
 // extern crate rocket; // the rocket macros need to be available
 // #[macro_use]
