@@ -7,6 +7,10 @@
 // #[macro_use]
 // extern crate mungos_rocket;
 
+// let routes = mungos_routes("db name", "collection name", AnyType)
+
+// AnyType must have derive(Serialize, Deserialize) (using the serde derive macro)
+
 #[macro_export]
 macro_rules! mungos_routes {
 	($database:expr, $collection:expr, $type_name:ty) => {
