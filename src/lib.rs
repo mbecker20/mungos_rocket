@@ -1,4 +1,7 @@
 // must have mungos, rocket with json feature enabled, and probably serde to use this macro
+// use with...
+// #[macro_use]
+// extern crate mungos_rocket;
 
 #[macro_export]
 macro_rules! mungos_routes {
