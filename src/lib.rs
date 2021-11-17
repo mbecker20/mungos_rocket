@@ -1,3 +1,5 @@
+// must have mungos and rocket with json feature enabled to use this macro
+
 #[macro_export]
 macro_rules! mungos_routes {
 	($database:expr, $collection:expr, $type_name:ty) => {
