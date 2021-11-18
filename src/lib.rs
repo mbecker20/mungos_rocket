@@ -1,15 +1,43 @@
-// must have mungos, rocket with json feature enabled, and probably serde to use this macro
-// rocket must .manage an instance of Mungos
-// use with...
-//
-// #[macro_use]
-// extern crate rocket; // the rocket macros need to be available
-// #[macro_use]
-// extern crate mungos_rocket;
-
-// let routes = mungos_routes("db name", "collection name", AnyType)
-
-// AnyType must have derive(Serialize, Deserialize) (using the serde derive macro)
+//! Generates default rocket REST routes for a collection.
+//! 
+//! Must be used along with mungos, rocket with the json feature enabled, and probably serde. 
+//! Rocket must .manage an instance of Mungos.
+//! 
+//! The macro is accessed as ``` mungos_routes!("database name", "collection name", SerializableType) ```, 
+//! where the database and collection names refer to your mongoDB database, and the SerializableType
+//! is the type of the collection schema. 
+//! 
+//! # Examples
+//! 
+//! ```
+//! #[macro_use]
+//! extern crate rocket; // the rocket macros need to be available
+//! #[macro_use]
+//! extern crate mungos_rocket;
+//! use mungos::Mungos;
+//! 
+//! #[derive(Debug, Serialize, Deserialize)]
+//! struct SerializableType {
+//! 	field: String,
+//! }
+//! 
+//! rocket.build()
+//! 	.manage(Mungos::new(...))
+//! 	.mount("/", mungos_routes!("db name", "collection name", SerializableType) )
+//! ```
+//! 
+//! The routes generated are: 
+//! 	
+//! 	- get " / " : get full collection
+//! 
+//! 	- get " /id " : get one document by its "_id" field
+//! 
+//! 	- post " / ", data : adds one document to the collection, specified by the struct in data
+//! 
+//! 	- patch " /id ", data : updates one document, specified by it's "_id" field, replacing it with the struct in data
+//! 
+//! 	- delete " /id " : deletes one document, specified by it's "_id" field
+//!
 
 #[macro_export]
 macro_rules! mungos_routes {
@@ -37,6 +65,13 @@ macro_rules! mungos_routes {
 				)
 			}
 
+			#[post("/", data = "<data>")]
+			async fn create(mungos: &State<Mungos>, data: Json<$type_name>) -> String {
+				mungos.collection($database, $collection).create_one(data.into_inner())
+					.await
+					.unwrap()
+			}
+
 			#[patch("/<id>", data = "<data>")]
 			async fn update(
 				id: &str,
@@ -46,13 +81,6 @@ macro_rules! mungos_routes {
 				Json(mungos.collection($database, $collection).update_one(id, data.into_inner())
 					.await
 					.unwrap())
-			}
-
-			#[post("/", data = "<data>")]
-			async fn create(mungos: &State<Mungos>, data: Json<$type_name>) -> String {
-				mungos.collection($database, $collection).create_one(data.into_inner())
-					.await
-					.unwrap()
 			}
 
 			#[delete("/<id>")]
