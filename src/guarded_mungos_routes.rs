@@ -49,7 +49,7 @@ macro_rules! guarded_mungos_routes {
 			use rocket::{State, serde::json::Json};
 
 			#[get("/")]
-			async fn get_all(mungos: &State<Mungos>, _guard: RequestGuard) -> Json<Vec<$TypeName>> {
+			async fn get_all(mungos: &State<Mungos>, _guard: $RequestGuard) -> Json<Vec<$TypeName>> {
 				Json(
 					mungos.collection($database, $collection).get_full_collection()
 						.await
@@ -58,7 +58,7 @@ macro_rules! guarded_mungos_routes {
 			}
 
 			#[get("/<id>")]
-			async fn get(id: &str, mungos: &State<Mungos>, _guard: RequestGuard) -> Json<$TypeName> {
+			async fn get(id: &str, mungos: &State<Mungos>, _guard: $RequestGuard) -> Json<$TypeName> {
 				Json(
 					mungos.collection($database, $collection).get_one(id)
 						.await
@@ -68,7 +68,7 @@ macro_rules! guarded_mungos_routes {
 			}
 
 			#[post("/", data = "<data>")]
-			async fn create(mungos: &State<Mungos>, data: Json<$TypeName>, _guard: RequestGuard) -> String {
+			async fn create(mungos: &State<Mungos>, data: Json<$TypeName>, _guard: $RequestGuard) -> String {
 				mungos.collection($database, $collection).create_one(data.into_inner())
 					.await
 					.unwrap()
@@ -79,7 +79,7 @@ macro_rules! guarded_mungos_routes {
 				id: &str,
 				mungos: &State<Mungos>,
 				data: Json<$TypeName>,
-        _guard: RequestGuard
+        _guard: $RequestGuard
 			) -> Json<$TypeName> {
 				Json(mungos.collection($database, $collection).update_one(id, data.into_inner())
 					.await
@@ -87,7 +87,7 @@ macro_rules! guarded_mungos_routes {
 			}
 
 			#[delete("/<id>")]
-			async fn delete(id: &str, mungos: &State<Mungos>, _guard: RequestGuard) -> String {
+			async fn delete(id: &str, mungos: &State<Mungos>, _guard: $RequestGuard) -> String {
 				mungos.collection::<$TypeName>($database, $collection).delete_one(id)
 					.await
 					.unwrap()
