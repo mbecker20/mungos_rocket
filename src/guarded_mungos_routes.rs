@@ -3,7 +3,7 @@
 //! Must be used along with mungos, rocket with the json feature enabled, and probably serde. 
 //! Rocket must .manage an instance of Mungos.
 //! 
-//! The macro is accessed as ``` mungos_routes!("database name", "collection name", SerializableType, RequestGuard) ```, 
+//! The macro is accessed as ``` guarded_mungos_routes!("database name", "collection name", SerializableType, RequestGuard) ```, 
 //! where the database and collection names refer to your mongoDB database, and the SerializableType
 //! is the type of the collection schema. RequestGuard refers to a rocket request guard struct that you want 
 //! to guard your routes (such as authentication). 
@@ -25,7 +25,7 @@
 //! 
 //! rocket.build()
 //! 	.manage(Mungos::new(...))
-//! 	.mount("/", mungos_routes!("db name", "collection name", SerializableType, AuthGuard) )
+//! 	.mount("/", guarded_mungos_routes!("db name", "collection name", SerializableType, AuthGuard) )
 //! ```
 //! 
 //! The routes generated are: 
