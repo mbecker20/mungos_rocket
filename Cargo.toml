@@ -1,6 +1,6 @@
 [package]
 name = "mungos_rocket"
-version = "0.0.5"
+version = "0.0.6"
 edition = "2021"
 authors = ["MoghTech"]
 description = "Helper macro for generating routes with Mungos"

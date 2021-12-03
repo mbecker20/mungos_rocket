@@ -77,7 +77,7 @@ macro_rules! mungos_routes {
 				mungos: &State<Mungos>,
 				data: Json<$type_name>,
 			) -> Status {
-				mungos.collection($database, $collection).update_one(id, Update::Regular(data.into_inner()))
+				mungos.collection::<$type_name>($database, $collection).update_one(id, Update::Regular(data.into_inner()))
 					.await
 					.unwrap();
 				Status::Ok
