@@ -43,7 +43,7 @@
 macro_rules! mungos_routes {
 	($database:expr, $collection:expr, $type_name:ty) => {
 		{
-			use mungos::Mungos;
+			use mungos::{Mungos, Update};
 			use rocket::{State, serde::json::Json};
 
 			#[get("/")]
@@ -61,7 +61,6 @@ macro_rules! mungos_routes {
 					mungos.collection($database, $collection).get_one(id)
 						.await
 						.unwrap()
-						.unwrap()
 				)
 			}
 
@@ -78,7 +77,7 @@ macro_rules! mungos_routes {
 				mungos: &State<Mungos>,
 				data: Json<$type_name>,
 			) -> Json<$type_name> {
-				Json(mungos.collection($database, $collection).update_one(id, data.into_inner())
+				Json(mungos.collection($database, $collection).update_one(id, Update::Regular(data.into_inner()))
 					.await
 					.unwrap())
 			}

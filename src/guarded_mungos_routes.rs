@@ -45,7 +45,7 @@
 macro_rules! guarded_mungos_routes {
 	($database:expr, $collection:expr, $TypeName:ty, $RequestGuard:ty) => {
 		{
-			use mungos::Mungos;
+			use mungos::{Mungos, Update};
 			use rocket::{State, serde::json::Json};
 
 			#[get("/")]
@@ -62,7 +62,6 @@ macro_rules! guarded_mungos_routes {
 				Json(
 					mungos.collection($database, $collection).get_one(id)
 						.await
-						.unwrap()
 						.unwrap()
 				)
 			}
@@ -81,7 +80,7 @@ macro_rules! guarded_mungos_routes {
 				data: Json<$TypeName>,
         _guard: $RequestGuard
 			) -> Json<$TypeName> {
-				Json(mungos.collection($database, $collection).update_one(id, data.into_inner())
+				Json(mungos.collection($database, $collection).update_one(id, Update::Regular(data.into_inner()))
 					.await
 					.unwrap())
 			}
