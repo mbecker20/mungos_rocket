@@ -41,13 +41,13 @@
 
 #[macro_export]
 macro_rules! mungos_routes {
-	($database:expr, $collection:expr, $type_name:ty) => {
+	($database:expr, $collection:expr, $TypeName:ty) => {
 		{
 			use mungos::{Mungos, Update};
 			use rocket::{State, serde::json::Json, http::Status};
 
 			#[get("/")]
-			async fn get_all(mungos: &State<Mungos>) -> Json<Vec<$type_name>> {
+			async fn get_all(mungos: &State<Mungos>) -> Json<Vec<$TypeName>> {
 				Json(
 					mungos.collection($database, $collection).get_full_collection()
 						.await
@@ -56,7 +56,7 @@ macro_rules! mungos_routes {
 			}
 
 			#[get("/<id>")]
-			async fn get(id: &str, mungos: &State<Mungos>) -> Json<$type_name> {
+			async fn get(id: &str, mungos: &State<Mungos>) -> Json<$TypeName> {
 				Json(
 					mungos.collection($database, $collection).get_one(id)
 						.await
@@ -65,7 +65,7 @@ macro_rules! mungos_routes {
 			}
 
 			#[post("/", data = "<data>")]
-			async fn create(mungos: &State<Mungos>, data: Json<$type_name>) -> String {
+			async fn create(mungos: &State<Mungos>, data: Json<$TypeName>) -> String {
 				mungos.collection($database, $collection).create_one(data.into_inner())
 					.await
 					.unwrap()
@@ -75,9 +75,9 @@ macro_rules! mungos_routes {
 			async fn update(
 				id: &str,
 				mungos: &State<Mungos>,
-				data: Json<$type_name>,
+				data: Json<$TypeName>,
 			) -> Status {
-				mungos.collection::<$type_name>($database, $collection).update_one(id, Update::Regular(data.into_inner()))
+				mungos.collection::<$TypeName>($database, $collection).update_one(id, Update::Regular(data.into_inner()))
 					.await
 					.unwrap();
 				Status::Ok
@@ -85,7 +85,7 @@ macro_rules! mungos_routes {
 
 			#[delete("/<id>")]
 			async fn delete(id: &str, mungos: &State<Mungos>) -> String {
-				mungos.collection::<$type_name>($database, $collection).delete_one(id)
+				mungos.collection::<$TypeName>($database, $collection).delete_one(id)
 					.await
 					.unwrap()
 			}

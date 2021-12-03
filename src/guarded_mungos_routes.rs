@@ -80,7 +80,7 @@ macro_rules! guarded_mungos_routes {
 				data: Json<$TypeName>,
         _guard: $RequestGuard
 			) -> Status {
-				mungos.collection::<$type_name>($database, $collection).update_one(id, Update::Regular(data.into_inner()))
+				mungos.collection::<$TypeName>($database, $collection).update_one(id, Update::Regular(data.into_inner()))
 					.await
 					.unwrap();
 				Status::Ok
