@@ -44,7 +44,7 @@ macro_rules! mungos_routes {
 	($database:expr, $collection:expr, $type_name:ty) => {
 		{
 			use mungos::{Mungos, Update};
-			use rocket::{State, serde::json::Json};
+			use rocket::{State, serde::json::Json, http::Status};
 
 			#[get("/")]
 			async fn get_all(mungos: &State<Mungos>) -> Json<Vec<$type_name>> {
@@ -76,10 +76,11 @@ macro_rules! mungos_routes {
 				id: &str,
 				mungos: &State<Mungos>,
 				data: Json<$type_name>,
-			) -> Json<$type_name> {
-				Json(mungos.collection($database, $collection).update_one(id, Update::Regular(data.into_inner()))
+			) -> Status {
+				mungos.collection($database, $collection).update_one(id, Update::Regular(data.into_inner()))
 					.await
-					.unwrap())
+					.unwrap();
+				Status::Ok
 			}
 
 			#[delete("/<id>")]
